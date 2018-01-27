@@ -1,22 +1,27 @@
 let component = ReasonReact.statelessComponent("PressureItem");
 
 let calculateDiff = (diff: float) : string => {
-  let red = ref(0.4588 +. (1.0 -. 0.4588) *. diff /. 10.0);
-  let green = ref(0.7020);
-  let blue = ref(0.6078);
-  if (diff < 5.0) {
-    green := green^ +. (0.8 -. green^) *. diff /. 4.0;
-    blue := blue^ +. (0.6588 -. blue^) *. diff /. 10.0;
-  } else {
-    green := green^ -. (green^ -. 0.0235) *. diff /. 20.0;
-    blue := blue^ -. (blue^ -. 0.1216) *. diff /. 20.0;
-  };
+  let red = 0.4588 +. (1.0 -. 0.4588) *. diff /. 10.0;
+  let green = 0.7020;
+  let blue = 0.6078;
+  let (newGreen, newBlue) =
+    if (diff < 5.0) {
+      (
+        green +. (0.8 -. green) *. diff /. 4.0,
+        blue +. (0.6588 -. blue) *. diff /. 10.0
+      );
+    } else {
+      (
+        green -. (green -. 0.0235) *. diff /. 20.0,
+        blue -. (blue -. 0.1216) *. diff /. 20.0
+      );
+    };
   "rgb("
-  ++ Js_float.toFixed(red^ *. 255.0)
+  ++ Js_float.toFixed(red *. 255.0)
   ++ ", "
-  ++ Js_float.toFixed(green^ *. 255.0)
+  ++ Js_float.toFixed(newGreen *. 255.0)
   ++ ", "
-  ++ Js_float.toFixed(blue^ *. 255.0)
+  ++ Js_float.toFixed(newBlue *. 255.0)
   ++ ")";
 };
 

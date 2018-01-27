@@ -46,13 +46,14 @@ let indexToDate = (input: int) : string => {
   let indexToDayName = input => {
     let current = Js.Date.make();
     let dayWeek = Js.Date.getDay(current) |> int_of_float;
-    let next = ref(dayWeek + input);
-    if (next^ >= 7) {
-      next := next^ - 7;
-    } else {
-      next := next^;
-    };
-    switch next^ {
+    let next = dayWeek + input;
+    let next =
+      if (next >= 7) {
+        next - 7;
+      } else {
+        next;
+      };
+    switch next {
     | 0 => "Sunday"
     | 1 => "Monday"
     | 2 => "Tuesday"
@@ -98,7 +99,10 @@ let make = (_) => {
                    |> Decode.pressures
                    |> (
                      pressures => {
-                       self.send(PressureLoaded(pressures)) |> ignore;
+                       PressureLoaded(pressures)
+                       |> self.send
+                       |> ignore;
+
                        resolve(pressures);
                      }
                    )
